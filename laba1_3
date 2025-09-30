@@ -1,0 +1,97 @@
+import java.util.Scanner;
+
+class Additive {
+    private double costPerGram;
+    private int gramsPerKg;
+
+    public void init(double costPerGram, int gramsPerKg) {
+        this.costPerGram = costPerGram;
+        this.gramsPerKg = gramsPerKg;
+    }
+
+    public void read(Scanner scanner) {
+        System.out.print("Введите стоимость 1 грамма добавки: ");
+        costPerGram = scanner.nextDouble();
+        System.out.print("Введите количество грамм на 1 кг продуктов: ");
+        gramsPerKg = scanner.nextInt();
+    }
+
+    public void display() {
+        System.out.println("Добавка: " + gramsPerKg + " г/кг, " + costPerGram + " рублей/г");
+    }
+
+    public double calculateCost() {
+        return costPerGram * gramsPerKg;
+    }
+}
+
+class Dish {
+    private String name;
+    private Additive additive1 = new Additive();
+    private Additive additive2 = new Additive();
+    private Additive additive3 = new Additive();
+    private double baseCostPerKg;
+    private double weightKg;
+
+    public void init(String name, double baseCostPerKg, double weightKg, Additive a1, Additive a2, Additive a3) {
+        this.name = name;
+        this.baseCostPerKg = baseCostPerKg;
+        this.weightKg = weightKg;
+        this.additive1 = a1;
+        this.additive2 = a2;
+        this.additive3 = a3;
+    }
+
+    public void read(Scanner scanner) {
+        System.out.print("Введите название блюда: ");
+        name = scanner.nextLine();
+        System.out.print("Введите стоимость основных компонентов за 1 кг: ");
+        baseCostPerKg = scanner.nextDouble();
+        System.out.print("Введите вес блюда (в кг): ");
+        weightKg = scanner.nextDouble();
+        scanner.nextLine();
+
+        System.out.println("Введите данные для добавки 1:");
+        additive1.read(scanner);
+        System.out.println("Введите данные для добавки 2:");
+        additive2.read(scanner);
+        System.out.println("Введите данные для добавки 3:");
+        additive3.read(scanner);
+    }
+
+    public void display() {
+        System.out.println("\nБлюдо: " + name);
+        System.out.println("Вес: " + weightKg + " кг");
+        System.out.println("Стоимость основных компонентов: " + baseCostPerKg + " рублей/кг");
+        additive1.display();
+        additive2.display();
+        additive3.display();
+        System.out.println("Общая стоимость блюда: " + calculateTotalCost() + " рублей");
+        System.out.println("Самая дешевая добавка: " + findCheapestAdditiveCost() + " рублей/кг");
+    }
+
+    public double calculateTotalCost() {
+        double additivesCostPerKg = additive1.calculateCost() + additive2.calculateCost() + additive3.calculateCost();
+        double totalCostPerKg = baseCostPerKg + additivesCostPerKg;
+        return totalCostPerKg * weightKg;
+    }
+
+    public double findCheapestAdditiveCost() {
+        double cost1 = additive1.calculateCost();
+        double cost2 = additive2.calculateCost();
+        double cost3 = additive3.calculateCost();
+        return Math.min(cost1, Math.min(cost2, cost3));
+    }
+}
+
+public class TwoClass {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        Dish dish = new Dish();
+        dish.read(scanner);
+        dish.display();
+
+        scanner.close();
+    }
+}
